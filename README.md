@@ -27,7 +27,7 @@ Once the above is complete and Gospec has been installed run
 
 `gospec create`
 
-this will take a some time, but will create 10 test databases that are exclusively used by Gospec \
+this will take some time, but will create 10 test databases that are exclusively used by Gospec \
 for concurrent test runs
 
 ## To Use Gospec
