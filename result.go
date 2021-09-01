@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 )
 
 // Result can either be the result of a group of specs or the merged result of all specs
@@ -48,11 +49,6 @@ func (r *Result) merge(otherResult Result) {
 	r.Summary.ExampleCount += otherResult.Summary.ExampleCount
 	r.Summary.PendingCount += otherResult.Summary.PendingCount
 	r.Summary.FailureCount += otherResult.Summary.FailureCount
-}
-
-func (r Result) log() {
-	r.logFailures()
-	r.logSummary()
 }
 
 func (r Result) logFailures() {
@@ -100,11 +96,11 @@ func (r Result) logFailureSummary() {
 }
 
 func logFailedExampleSummary(example Example) {
-	fmt.Println(Red, "rspec", example.FilePath + ":" + strconv.Itoa(example.LineNumber), Cyan, example.FullDescription)
+	fmt.Println(Red, "rspec", example.FilePath+":"+strconv.Itoa(example.LineNumber), Cyan, example.FullDescription)
 }
 
 func (r Result) summaryTextColor() string {
-	if r.Summary.FailureCount + r.Summary.ErrorsOutsideOfExamplesCount > 0 {
+	if r.Summary.FailureCount+r.Summary.ErrorsOutsideOfExamplesCount > 0 {
 		return Red
 	} else if r.Summary.PendingCount > 0 {
 		return Yellow
@@ -114,11 +110,31 @@ func (r Result) summaryTextColor() string {
 }
 
 // jsonToResult intakes the json output of the rspec subprocess and returns a Result struct
+// If the result fails to return valid json it's often related to a need to run migrations
+// when migrations need to be run, the response is a string, not json
 func jsonToResult(out []byte) Result {
 	result := Result{}
+	if !json.Valid(out) {
+		out = cleanJson(out) // non json surrounding json may need to be stripped from rspec json return values
+	}
 	err := json.Unmarshal(out, &result)
 	if err != nil {
-		log.Fatalln("couldn't unmarshal data", "error:", err, "output:", out)
+		log.Fatalln("Invalid JSON response", "\nerror: ", err, "\n"+string(out))
 	}
 	return result
+}
+
+// cleanJson removes intermittent
+func cleanJson(out []byte) []byte {
+	result := string(out)
+	startI := strings.Index(result, "{")
+	endI := strings.LastIndex(result, "}")
+
+	result = result[startI : endI+1]
+	byteResult := []byte(result)
+	if json.Valid(byteResult) {
+		return byteResult
+	} else {
+		return out
+	}
 }
