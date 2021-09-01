@@ -31,11 +31,11 @@ this will take a some time, but will create 10 test databases that are exclusive
 for concurrent test runs
 
 ## To Use Gospec
-To run a file
-`gospec /path/to/spec/file/to/run_spec.rb`
-To run a directory
-`gospec /page/to/spec/directory/to/run`
-To run multiple files and directories
+To run a file \
+`gospec /path/to/spec/file/to/run_spec.rb` \
+To run a directory \
+`gospec /page/to/spec/directory/to/run` \
+To run multiple files and directories \
 `gospec /path/to/spec/file/to/run_spec.rb /page/to/spec/directory/to/run`
 
 ## Notes on current limitations
