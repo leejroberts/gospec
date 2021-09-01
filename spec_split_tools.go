@@ -1,26 +1,24 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
 
 // splitSpecsRotating splits the specs for all files given via "rotating" (each it goes to a different group)
 // For example, if the max split was 4 and a spec file had 4 specs, each spec run would get 1 spec.
-// TODO: send back a matrix rather than concatenating as string
-func splitSpecsRotating(files []string, maxSplit int) []string {
+func splitSpecsRotating(files []string, maxSplit int) [][]string {
 	groupIndex := 0
-	var specGroups []string
+	var specGroups [][]string
 	for _, file := range files {
 		for _, specs := range splitFileRotating(file, maxSplit) {
 			if groupIndex >= maxSplit {
 				groupIndex = 0
 			}
 			if len(specGroups) > groupIndex {
-				specGroups[groupIndex] += " " + specs
+				specGroups[groupIndex] = append(specGroups[groupIndex], specs)
 			} else {
-				specGroups = append(specGroups, specs)
+				specGroups = append(specGroups, []string{specs})
 			}
 			groupIndex++
 		}
@@ -34,31 +32,16 @@ func splitFileRotating(file string, maxSplit int) []string {
 	splitIndex := 0
 	var specSets []string
 	for _, itLineNumber := range getItPositions(file) {
-		fmt.Println(itLineNumber)
 		if splitIndex >= maxSplit {
 			splitIndex = 0
 		}
 		if len(specSets) > splitIndex {
 			specSets[splitIndex] += ":" + strconv.Itoa(itLineNumber)
 		} else {
-			specSets = append(specSets, strings.TrimSpace(file)+":"+strconv.Itoa(itLineNumber))
+			newSpecSet := strings.TrimSpace(file) + ":" + strconv.Itoa(itLineNumber)
+			specSets = append(specSets, newSpecSet)
 		}
 		splitIndex++
 	}
 	return specSets
-}
-
-func splitSpecsSequential(files []string, maxSplit int) []string {
-	itPositions := getItPositions(files[0])
-	groupSize := len(itPositions) / maxSplit
-	groupIndex := 0
-	itGroups := []string{""} // base string for first group is already present
-	for i, itPosition := range itPositions {
-		if i >= groupSize {
-			itGroups = append(itGroups, "")
-			groupIndex++
-		}
-		itGroups[groupIndex] += ":" + strconv.Itoa(itPosition)
-	}
-	return itGroups
 }
