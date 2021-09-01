@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"gospec/rspec"
+	"gospec/variables"
 	"sync"
 	"time"
 )
@@ -26,12 +28,12 @@ func (r RSpecRunner) run() {
 	var c = make(chan Result)
 	var wg sync.WaitGroup
 
-	for i, specs := range splitSpecsRotating(r.files, r.maxSplit) {
+	for i, specs := range rspec.SplitSpecsRotating(r.files, r.maxSplit) {
 		wg.Add(1)
 
 		go func(specGroup []string, databaseNumber int) {
 			defer wg.Done()
-			jsonOutput := runSpecSubprocess(specGroup, databaseNumber)
+			jsonOutput := rspec.RunSpecSubprocess(specGroup, databaseNumber)
 			c <- jsonToResult(jsonOutput)
 		}(specs, i)
 	}
@@ -54,5 +56,5 @@ func (r RSpecRunner) logResults() {
 }
 
 func (r RSpecRunner) printTimeElapsed() {
-	fmt.Println(White, "Finished in", r.endTime.Sub(r.startTime))
+	fmt.Println(variables.White, "Finished in", r.endTime.Sub(r.startTime))
 }

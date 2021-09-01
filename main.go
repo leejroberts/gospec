@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"gospec/database"
+	"gospec/rspec"
 	"log"
 	"os"
 	"time"
@@ -15,9 +17,9 @@ func main() {
 	case "-h", "--help":
 		printHelp()
 	case "migrate":
-		performAllDatabaseAction("migrate")
+		database.PerformOnAll("migrate")
 	case "create":
-		performAllDatabaseAction("create")
+		database.PerformOnAll("create")
 	default:
 		runSpecs(os.Args[1:])
 	}
@@ -38,7 +40,7 @@ func printHelp() {
 }
 
 func runSpecs(filesOrDirectories []string) {
-	files := getAllSpecFiles(filesOrDirectories)
+	files := rspec.GetAllSpecFiles(filesOrDirectories)
 	rSpecr := initRspecRunner(files)
 	rSpecr.startTime = time.Now()
 	rSpecr.run()

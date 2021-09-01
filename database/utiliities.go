@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"fmt"
@@ -8,17 +8,17 @@ import (
 	"strconv"
 )
 
-// performAllDatabaseAction creates a set of 10 databases 0 - 9
+// PerformOnAll creates a set of 10 databases 0 - 9
 // to handle the max number of concurrent processes that can occur
-func performAllDatabaseAction(action string) {
-	for i := 0; i < 9; i++ {
-		dataBaseAction(action, i)
+func PerformOnAll(action string) {
+	for i := 0; i <= 9; i++ {
+		perform(action, i)
 	}
 }
 
-// dataBaseAction performs a rails database action (create/migrate)
+// perform performs a rails database action (create/migrate)
 //for given database number (0 - 9)
-func dataBaseAction(action string, databaseNumber int) {
+func perform(action string, databaseNumber int) {
 	if action != "create" && action != "migrate" {
 		log.Fatalln("valid database actions are 'create', or 'migrate'")
 	}

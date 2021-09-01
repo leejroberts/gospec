@@ -1,13 +1,13 @@
-package main
+package rspec
 
 import (
 	"strconv"
 	"strings"
 )
 
-// splitSpecsRotating splits the specs for all files given via "rotating" (each it goes to a different group)
+// SplitSpecsRotating splits the specs for all files given via "rotating" (each it goes to a different group)
 // For example, if the max split was 4 and a spec file had 4 specs, each spec run would get 1 spec.
-func splitSpecsRotating(files []string, maxSplit int) [][]string {
+func SplitSpecsRotating(files []string, maxSplit int) [][]string {
 	groupIndex := 0
 	var specGroups [][]string
 	for _, file := range files {

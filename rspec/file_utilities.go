@@ -1,4 +1,4 @@
-package main
+package rspec
 
 import (
 	"bufio"
@@ -24,9 +24,9 @@ func readFileToSlice(filePath string) []string {
 	return strings.Split(string(contents), "\n")
 }
 
-// getAllSpecFiles crawls through the passed in slice of files and directories
+// GetAllSpecFiles crawls through the passed in slice of files and directories
 // returns all the spec files
-func getAllSpecFiles(filesOrDirectories []string) []string {
+func GetAllSpecFiles(filesOrDirectories []string) []string {
 	files := []string{}
 	for _, fileOrDirectory := range filesOrDirectories {
 		if isADirectory(fileOrDirectory) {

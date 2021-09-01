@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"gospec/variables"
 	"log"
 	"strconv"
 	"strings"
@@ -63,10 +64,10 @@ func (r Result) logFailures() {
 
 func logFailedExample(failureCount int, example Example) {
 	fmt.Println()
-	fmt.Println(White, strconv.Itoa(failureCount)+")", example.FullDescription)
-	fmt.Println("\t" + Red + example.Status)
-	fmt.Println("\t" + Red + example.Exception.Message)
-	fmt.Println(Cyan + example.FilePath + ":" + strconv.Itoa(example.LineNumber))
+	fmt.Println(variables.White, strconv.Itoa(failureCount)+")", example.FullDescription)
+	fmt.Println("\t" + variables.Red + example.Status)
+	fmt.Println("\t" + variables.Red + example.Exception.Message)
+	fmt.Println(variables.Cyan + example.FilePath + ":" + strconv.Itoa(example.LineNumber))
 }
 
 func (r Result) logSummary() {
@@ -87,7 +88,7 @@ func (r Result) logFailureSummary() {
 	for _, example := range r.Examples {
 		if example.Status == "failed" {
 			if headerPrinted == false {
-				fmt.Println(White, "Failed Examples")
+				fmt.Println(variables.White, "Failed Examples")
 				headerPrinted = true
 			}
 			logFailedExampleSummary(example)
@@ -96,16 +97,16 @@ func (r Result) logFailureSummary() {
 }
 
 func logFailedExampleSummary(example Example) {
-	fmt.Println(Red, "rspec", example.FilePath+":"+strconv.Itoa(example.LineNumber), Cyan, example.FullDescription)
+	fmt.Println(variables.Red, "rspec", example.FilePath+":"+strconv.Itoa(example.LineNumber), variables.Cyan, example.FullDescription)
 }
 
 func (r Result) summaryTextColor() string {
 	if r.Summary.FailureCount+r.Summary.ErrorsOutsideOfExamplesCount > 0 {
-		return Red
+		return variables.Red
 	} else if r.Summary.PendingCount > 0 {
-		return Yellow
+		return variables.Yellow
 	} else {
-		return Green
+		return variables.Green
 	}
 }
 
